@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import auth from '@react-native-firebase/auth';
 import { AuthContext } from '../../contexts/AuthContext';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Alert } from 'react-native';
+import { Button } from 'react-native-paper';
 
 export const Login = ({ navigation }) => {
   const { setUserStatus} = useContext(AuthContext);
@@ -37,7 +38,8 @@ export const Login = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
+      <View style={styles.container}>
       <Text style={styles.heading}>Login</Text>
       <TextInput
         style={styles.input}
@@ -57,17 +59,22 @@ export const Login = ({ navigation }) => {
           <Text style={styles.buttonText}>LOGIN</Text>
         </View>
       </TouchableHighlight>
-      <Text style={styles.noAccount}>Don't Have an Account?</Text>
-      <TouchableHighlight onPress={() => navigation.navigate('Register')}>
+    </View>
+    <View style={styles.linkContainer}>
+    <TouchableHighlight onPress={() => navigation.navigate('Register')}>
         <View>
-          <Text style={styles.link}>SignUp</Text>
+          <Text style={styles.link}>Don't have an account?</Text>
         </View>
       </TouchableHighlight>
+    </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  mainContainer:{
+    flex: 1,
+  },  
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -90,16 +97,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#DDDDDD",
     paddingHorizontal: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   buttonText: {
     fontSize: 16
   },
-  noAccount: {
-    marginTop: 20
+  linkContainer:{
+    alignItems: 'center'
   },
   link: {
     textDecorationLine: 'underline',
-    fontSize: 16
+    fontSize: 16,
+    marginBottom: 16,
   }
 })

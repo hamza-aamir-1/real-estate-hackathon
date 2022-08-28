@@ -31,37 +31,69 @@ export const Register = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
+      <View style={styles.container}>
       <Text style={styles.heading}>Register</Text>
       <TextInput
         style={styles.input}
         onChangeText={setEmail}
         value={email}
+        placeholder="First Name"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setEmail}
+        value={email}
+        placeholder="Last Name"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setEmail}
+        value={email}
+        placeholder="Username"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setEmail}
+        value={email}
         placeholder="Email Address"
-        keyboardType="email"
+        keyboardType="email-address"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setEmail}
+        value={email}
+        placeholder="Phone Number"
+        keyboardType='phone-pad'
       />
       <TextInput
         style={styles.input}
         onChangeText={setPassword}
         value={password}
         placeholder="Password"
+        secureTextEntry
       />
       <TouchableHighlight onPress={() => (!email || !password) ? Alert.alert("Enter Email and Password") : signup()}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>SIGNUP</Text>
         </View>
       </TouchableHighlight>
-      <Text style={styles.noAccount}>Already have an account?</Text>
+    </View>
+    <View style={styles.linkContainer}>
       <TouchableHighlight onPress={() => navigation.navigate('Login')}>
         <View>
-          <Text style={styles.link}>Login</Text>
+          <Text style={styles.link}>Already have an account?</Text>
         </View>
       </TouchableHighlight>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  mainContainer:{
+    flex: 1,
+  },  
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -84,16 +116,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#DDDDDD",
     paddingHorizontal: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   buttonText: {
     fontSize: 16
   },
-  noAccount: {
-    marginTop: 20
+  linkContainer:{
+    alignItems: 'center'
   },
   link: {
     textDecorationLine: 'underline',
-    fontSize: 16
+    fontSize: 16,
+    marginBottom: 16,
   }
 })
