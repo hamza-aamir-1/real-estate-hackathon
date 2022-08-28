@@ -9,20 +9,25 @@ export const Home = () => {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const todosRef = firebase.firestore().collection('properties');
+  const propertyRef = firebase.firestore().collection('properties');
 
   useEffect(async () => {
-    todosRef
+    propertyRef
     .onSnapshot(
       querySnapshot => {
         const data = []
         querySnapshot.forEach((doc) => {
-          const {title, price, city} = doc.data()
+          const {title, city, propertyType, area, finishType, price, bedRoom, bathRoom} = doc.data()
           data.push({
             id: doc.id,
             title,
-            price,
             city,
+            propertyType,
+            area,
+            finishType,
+            price,
+            bedRoom,
+            bathRoom
           })
         })
         setData(data)
@@ -47,6 +52,19 @@ export const Home = () => {
     <Card.Content style={styles.priceBox}>
       <Title style={styles.price}>Rs. {item.price}</Title>
       <Paragraph style={styles.location}>{item.city}</Paragraph>
+    </Card.Content>
+    <Card.Content style={styles.priceBox}>
+      <Paragraph style={styles.location}>Property Type: {item.propertyType}</Paragraph>
+    </Card.Content>
+    <Card.Content style={styles.priceBox}>
+      <Paragraph style={styles.location}>Area: {item.area} sq. meter</Paragraph>
+    </Card.Content>
+    <Card.Content style={styles.priceBox}>
+      <Paragraph style={styles.location}>Finish Type: {item.finishType}</Paragraph>
+    </Card.Content>
+    <Card.Content style={styles.priceBox}>
+      <Paragraph style={styles.location}>Bedrooms: {item.bedRoom}</Paragraph>
+      <Paragraph style={styles.location}>Bathrooms: {item.bathRoom}</Paragraph>
     </Card.Content>
     <Card.Content style={styles.adminDetails}>
       <Avatar.Image size={30} source={{ uri: 'https://picsum.photos/200' }} />
