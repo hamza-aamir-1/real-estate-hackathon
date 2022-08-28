@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import auth from '@react-native-firebase/auth';
 import { AuthContext } from '../../contexts/AuthContext';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { firebase } from '@react-native-firebase/auth';
 
 export const Home = () => {
 const { setUserStatus} = useContext(AuthContext);

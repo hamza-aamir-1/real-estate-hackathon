@@ -1,12 +1,15 @@
 import React, {useContext} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home } from '../screens/frontend/Home';
+import Profile from '../screens/frontend/Profile';
 import { Login } from '../screens/auth/Login';
 import { Register } from '../screens/auth/Register';
 import { AuthContext } from '../contexts/AuthContext';
 import { Alert, Button } from 'react-native';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export const AppNavigator = () => {
 
@@ -14,12 +17,12 @@ export const AppNavigator = () => {
     const isAuthenticated = userStatus;
 
   return (
-    <Stack.Navigator>
 
-        {
+        
             isAuthenticated ? 
-            (<Stack.Group initialRouteName="Home">
-                <Stack.Screen name="Home" component={Home}
+            (
+            <Tab.Navigator initialRouteName="Home">
+                <Tab.Screen name="Home" component={Home}
                 options={{
                   // headerTitle: (props) => <LogoTitle {...props} />,
                   headerRight: () => (
@@ -31,13 +34,13 @@ export const AppNavigator = () => {
                   ),
                 }}
                 />
-            </Stack.Group>)
+                <Tab.Screen name="Profile" component={Profile}/>
+            </Tab.Navigator>)
              : 
-             (<Stack.Group initialRouteName="Login" screenOptions={{headerShown: false}}>
+             (<Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
-            </Stack.Group>)
-        }
-    </Stack.Navigator>
+            </Stack.Navigator>)
+        
   )
 }

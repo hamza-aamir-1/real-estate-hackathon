@@ -1,14 +1,30 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import { AuthContext } from '../../contexts/AuthContext';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Alert } from 'react-native';
 
+const initialState = { email: "", password: "" };
+
 export const Register = ({ navigation }) => {
+
   const { setUserStatus} = useContext(AuthContext);
-  const [email, setEmail] = React.useState(null);
-  const [password, setPassword] = React.useState(null);
+  const [state, setState] = useState(initialState);
+
+  const handleChange = (name, value) => {
+    setState(s => ({ ...s, [name]: value }))
+  }
 
   const signup = () => {
+    let { email, password } = state
+
+        if (!email) {
+            alert("Please enter your email")
+            return
+        }
+        if (password.length < 6) {
+            alert("Password must be 6 chars")
+            return
+        }
     auth()
   .createUserWithEmailAndPassword(email, password)
   .then(() => {
@@ -36,44 +52,38 @@ export const Register = ({ navigation }) => {
       <Text style={styles.heading}>Register</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
-        value={email}
+        onChangeText={val => handleChange("firstName", val)}
         placeholder="First Name"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
-        value={email}
+        onChangeText={val => handleChange("lastName", val)}
         placeholder="Last Name"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
-        value={email}
+        onChangeText={val => handleChange("userName", val)}
         placeholder="Username"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
-        value={email}
+        onChangeText={val => handleChange("email", val)}
         placeholder="Email Address"
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setEmail}
-        value={email}
+        onChangeText={val => handleChange("number", val)}
         placeholder="Phone Number"
         keyboardType='phone-pad'
       />
       <TextInput
         style={styles.input}
-        onChangeText={setPassword}
-        value={password}
+        onChangeText={val => handleChange("password", val)}
         placeholder="Password"
         secureTextEntry
       />
-      <TouchableHighlight onPress={() => (!email || !password) ? Alert.alert("Enter Email and Password") : signup()}>
+      <TouchableHighlight onPress={() => signup()}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>SIGNUP</Text>
         </View>

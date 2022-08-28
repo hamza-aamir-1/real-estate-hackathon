@@ -2,7 +2,6 @@ import React, {useContext} from 'react';
 import auth from '@react-native-firebase/auth';
 import { AuthContext } from '../../contexts/AuthContext';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Alert } from 'react-native';
-import { Button } from 'react-native-paper';
 
 export const Login = ({ navigation }) => {
   const { setUserStatus} = useContext(AuthContext);
@@ -12,9 +11,10 @@ export const Login = ({ navigation }) => {
   const loginBtn = () => {
     auth()
   .signInWithEmailAndPassword(email, password)
-  .then(() => {
+  .then((user) => {
     console.log('User logged in successfully!');
     setUserStatus(true);
+    setUserData(user);
   })
   .catch(error => {
 
@@ -46,13 +46,14 @@ export const Login = ({ navigation }) => {
         onChangeText={setEmail}
         value={email}
         placeholder="Email Address"
-        keyboardType="email"
+        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
         onChangeText={setPassword}
         value={password}
         placeholder="Password"
+        secureTextEntry
       />
       <TouchableHighlight onPress={() => (!email || !password) ? Alert.alert("Enter Email and Password") : loginBtn()}>
         <View style={styles.button}>
