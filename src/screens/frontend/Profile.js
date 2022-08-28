@@ -1,10 +1,21 @@
 import { View, Text, StyleSheet, TouchableHighlight, TextInput } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { firebase } from '@react-native-firebase/auth';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export default function Profile() {
+
+  const { setUserStatus} = useContext(AuthContext);
+  const signout = () => {
+    auth()
+  .signOut()
+  .then(() => {
+    setUserStatus(false);
+    console.log('User signed out!');
+  });
+  }
 
   const user = firebase.auth().currentUser;
   const [firstName, setFirstName] = useState(user.firstName ? user.firstName : "");
@@ -55,6 +66,11 @@ export default function Profile() {
         placeholder="Password"
         secureTextEntry
       />
+      <TouchableHighlight onPress={() => signout()}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Sign Out</Text>
+        </View>
+      </TouchableHighlight>
     </View>
   )
 }
@@ -72,5 +88,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '90%',
     paddingHorizontal: 15
+  },
+  button: {
+    marginTop: 20,
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    paddingHorizontal: 20,
+    paddingVertical: 10
+  },
+  buttonText: {
+    fontSize: 16
   },
 })

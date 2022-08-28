@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home } from '../screens/frontend/Home';
 import Profile from '../screens/frontend/Profile';
+import Sell from '../screens/frontend/Sell';
 import { Login } from '../screens/auth/Login';
 import { Register } from '../screens/auth/Register';
 import { AuthContext } from '../contexts/AuthContext';
@@ -34,6 +35,7 @@ export const AppNavigator = () => {
                   ),
                 }}
                 />
+                <Tab.Screen name="Sell" component={Sell}/>
                 <Tab.Screen name="Profile" component={Profile}/>
             </Tab.Navigator>)
              : 
