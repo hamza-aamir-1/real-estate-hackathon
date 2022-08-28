@@ -2,6 +2,8 @@ import React, {useContext, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import { AuthContext } from '../../contexts/AuthContext';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Alert } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import firebase from "@react-native-firebase/app"
 
 const initialState = { email: "", password: "" };
 
@@ -9,14 +11,23 @@ export const Register = ({ navigation }) => {
 
   const { setUserStatus} = useContext(AuthContext);
   const [state, setState] = useState(initialState);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (name, value) => {
-    setState(s => ({ ...s, [name]: value }))
-  }
+  // const handleChange = (name, value) => {
+  //   setState(s => ({ ...s, [name]: value }))
+  // }
 
   const signup = () => {
-    let { email, password } = state
-
+    // let { firstName ,email, password } = state
+        if (firstName === "") {
+          alert("Please enter your First Name")
+          return
+        }
         if (!email) {
             alert("Please enter your email")
             return
@@ -27,9 +38,10 @@ export const Register = ({ navigation }) => {
         }
     auth()
   .createUserWithEmailAndPassword(email, password)
-  .then(() => {
-    console.log('User account created & signed in!');
-    setUserStatus(true);
+  .then((userCredential) => {
+    const user = userCredential.user;
+    console.log(user);
+    createUserProfile(user);
   })
   .catch(error => {
     if (error.code === 'auth/email-already-in-use') {
@@ -46,40 +58,68 @@ export const Register = ({ navigation }) => {
   });
   }
 
+  const createUserProfile = (user) => {
+    let formData = {
+        firstName: firstName,
+        lastName: lastName,
+        email: user.email,
+        uid: user.uid,
+        dateCreated: firebase.firestore.FieldValue.serverTimestamp()
+    }
+    firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set(formData)
+        .then(() => {
+            console.log('User account created & signed in!');
+            setUserStatus(true);
+        })
+        .catch(err => {
+            console.error(err)
+        })
+}
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container}>
       <Text style={styles.heading}>Register</Text>
       <TextInput
         style={styles.input}
-        onChangeText={val => handleChange("firstName", val)}
+        onChangeText={setFirstName}
+        value={firstName}
         placeholder="First Name"
       />
       <TextInput
         style={styles.input}
-        onChangeText={val => handleChange("lastName", val)}
+        onChangeText={setLastName}
+        value={lastName}
         placeholder="Last Name"
       />
       <TextInput
         style={styles.input}
-        onChangeText={val => handleChange("userName", val)}
+        onChangeText={setUserName}
+        value={userName}
         placeholder="Username"
       />
       <TextInput
         style={styles.input}
-        onChangeText={val => handleChange("email", val)}
+        // onChangeText={val => handleChange("email", val)}
+        onChangeText={setEmail}
+        value={email}
         placeholder="Email Address"
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
-        onChangeText={val => handleChange("number", val)}
+        onChangeText={setNumber}
+        value={number}
         placeholder="Phone Number"
         keyboardType='phone-pad'
       />
       <TextInput
         style={styles.input}
-        onChangeText={val => handleChange("password", val)}
+        onChangeText={setPassword}
+        value={password}
         placeholder="Password"
         secureTextEntry
       />

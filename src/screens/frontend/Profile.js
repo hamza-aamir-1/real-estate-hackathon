@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableHighlight, TextInput } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { firebase } from '@react-native-firebase/auth';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -7,7 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 export default function Profile() {
 
   const user = firebase.auth().currentUser;
-  const [firstName, setFirstName] = useState(user.firstName || "");
+  const [firstName, setFirstName] = useState(user.firstName ? user.firstName : "");
   const [lastName, setLastName] = useState(user.lastName || "");
   const [userName, setUserName] = useState(user.userName || "");
   const [email, setEmail] = useState(user.email);
