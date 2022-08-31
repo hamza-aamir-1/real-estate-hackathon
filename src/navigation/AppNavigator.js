@@ -7,7 +7,8 @@ import Sell from '../screens/frontend/Sell';
 import { Login } from '../screens/auth/Login';
 import { Register } from '../screens/auth/Register';
 import { AuthContext } from '../contexts/AuthContext';
-import { Alert, Button } from 'react-native';
+import { Alert, Button, View, StyleSheet } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -18,25 +19,34 @@ export const AppNavigator = () => {
     const isAuthenticated = userStatus;
 
   return (
-
         
             isAuthenticated ? 
             (
-            <Tab.Navigator initialRouteName="Home">
+            <Tab.Navigator initialRouteName="Home"
+              screenOptions={{
+                tabBarShowLabel: false,
+                tabBarStyle:{
+                  backgroundColor:'silver',
+                  height:50,
+                },
+              }}
+            >
                 <Tab.Screen name="Home" component={Home}
                 options={{
-                  // headerTitle: (props) => <LogoTitle {...props} />,
-                  headerRight: () => (
-                    <Button
-                      onPress={() => Alert.alert('This is a button!')}
-                      title="Info"
-                      color="#fff"
-                    />
-                  ),
+                  tabBarIcon: () => <IconButton icon="home" size={28}/>,
                 }}
                 />
-                <Tab.Screen name="Sell" component={Sell}/>
-                <Tab.Screen name="Profile" component={Profile}/>
+                <Tab.Screen name="Sell" component={Sell}
+                options={{
+                  tabBarIcon: () => <View style={styles.iconBox}><IconButton icon="plus" size={26}/></View>,
+                  headerTitle: 'Add Property'
+                }}
+                />
+                <Tab.Screen name="Profile" component={Profile}
+                options={{
+                  tabBarIcon: () => <IconButton icon="account" size={28}/>,
+                }}
+                />
             </Tab.Navigator>)
              : 
              (<Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
@@ -46,3 +56,17 @@ export const AppNavigator = () => {
         
   )
 }
+
+const styles = StyleSheet.create({
+  iconBox: {
+    width: 55,
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    borderRadius: 50,
+    fontSize: 30,
+    bottom: 15,
+  },
+})

@@ -47,12 +47,14 @@ export const Login = ({ navigation }) => {
         value={email}
         placeholder="Email Address"
         keyboardType="email-address"
+        placeholderTextColor='gray'
       />
       <TextInput
         style={styles.input}
         onChangeText={setPassword}
         value={password}
         placeholder="Password"
+        placeholderTextColor='gray'
         secureTextEntry
       />
       <TouchableHighlight onPress={() => (!email || !password) ? Alert.alert("Enter Email and Password") : loginBtn()}>
@@ -84,14 +86,16 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: 'black',
   },
   input: {
-    fontSize: 20,
+    fontSize: 18,
     marginTop: 20,
     borderColor: 'gray',
     borderWidth: 1,
     width: '90%',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    color: 'black'
   },
   button: {
     marginTop: 20,
@@ -101,14 +105,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   buttonText: {
-    fontSize: 16
+    fontSize: 16,
+    color: 'black',
   },
   linkContainer:{
-    alignItems: 'center'
+    alignItems: 'center',
   },
   link: {
     textDecorationLine: 'underline',
     fontSize: 16,
     marginBottom: 16,
+    color: 'black',
   }
 })

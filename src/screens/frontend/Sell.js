@@ -6,16 +6,82 @@ import { Appbar, Button, List } from 'react-native-paper';
 
 export default function Sell() {
 
-    const [ property, setProperty ] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState("");
+    const [ property, setProperty ] = useState({});
     const [ properties, setProperties ] = useState([]);
     const ref = firestore().collection('properties');
 
     const user = firebase.auth().currentUser;
 
+    const [loading, setLoading] = useState(false); // Set loading to true on component mount
+  const [allUsers, setAllUsers] = useState([]);
+  const [email, setEmail] = useState(user.email);
+
+    if (loading) {
+      return <ActivityIndicator />;
+    }
+
+    useEffect(() => {
+      const subscriber = firestore()
+        .collection('users')
+        .where('email', '==', email)
+        .onSnapshot(querySnapshot => {
+          const allUsers = [];
+    
+          querySnapshot.forEach(documentSnapshot => {
+            allUsers.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+    
+          setAllUsers(allUsers);
+          setLoading(false);
+          setFirstName(allUsers[0].firstName);
+          setLastName(allUsers[0].lastName);
+        });
+    
+      // Unsubscribe from events when no longer in use
+      return () => subscriber();
+    }, []);
+
     async function addProperty() {
+      if (title.trim().length <= 3) {
+        alert("Please enter property title")
+        return
+      }
+      if (city.trim().length <= 3 || !(/^[A-Za-z\s]*$/.test(city))) {
+        alert("Please enter City Name  \n (City Name Contains only letters)")
+        return
+      }
+      if (propertyType.trim().length <= 3 || !(/^[A-Za-z\s]*$/.test(propertyType))) {
+        alert("Please enter Property Type \n (Property Type contains only letters)")
+        return
+      }
+      if (area.trim().length < 1 || !(/^[0-9]+$/.test(area))) {
+        alert("Please enter area")
+        return
+      }
+      if (finishType.trim().length <= 3 || !(/^[A-Za-z\s]*$/.test(finishType))) {
+        alert("Please enter Finish Type \n (Finish Type contains only letters)")
+        return
+      }
+      if (price.trim().length < 1 || !(/^[0-9]+$/.test(price))) {
+        alert("Please enter a price")
+        return
+      }
+      if (bedRoom.trim().length < 1 || !(/^[0-9]+$/.test(bedRoom))) {
+        alert("Please enter a number of bedrooms")
+        return
+      }
+      if (bathRoom.trim().length < 1 || !(/^[0-9]+$/.test(bathRoom))) {
+        alert("Please enter a number of bathrooms")
+        return
+      }
         await ref.add({
           id: user.uid,
-          email: user.email,  
+          email: user.email,
           title: title,
           city: city,
           propertyType: propertyType,
@@ -23,7 +89,9 @@ export default function Sell() {
           finishType: finishType,
           price: price,
           bedRoom: bedRoom,
-          bathRoom: bathRoom
+          bathRoom: bathRoom,
+          firstName: firstName,
+          lastName: lastName,
         });
         setTitle('');
         setCity('');
@@ -33,7 +101,11 @@ export default function Sell() {
         setPrice('');
         setBedRoom('');
         setBathRoom('');
+        setFirstName('');
+        setLastName('');
       }
+
+
 
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
@@ -45,61 +117,79 @@ export default function Sell() {
   const [bathRoom, setBathRoom] = useState("");
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
+      <Text style={styles.text}>Property Title :</Text>
       <TextInput
         style={styles.input}
         onChangeText={setTitle}
         value={title}
-        placeholder="Property Title"
+        placeholder="ABC"
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>Location :</Text>
       <TextInput
         style={styles.input}
         onChangeText={setCity}
         value={city}
-        placeholder="Location"
+        placeholder="City (i.e. Faisalabad)"
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>Property Type : </Text>
       <TextInput
         style={styles.input}
         onChangeText={setPropertyType}
         value={propertyType}
-        placeholder="Property Type"
+        placeholder="Home / Villa / Flat / Apartment"
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>Area / Size</Text>
       <TextInput
         style={styles.input}
         onChangeText={setArea}
         value={area}
-        placeholder="Area / Size"
+        placeholder="Square Meter (i.e. 500)"
         keyboardType='numeric'
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>Finish Type</Text>
       <TextInput
         style={styles.input}
         onChangeText={setFinishType}
         value={finishType}
-        placeholder="Finish Type"
+        placeholder="Well Furnished / Not Furnished"
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>Price</Text>
       <TextInput
         style={styles.input}
         onChangeText={setPrice}
         value={price}
-        placeholder="Price"
+        placeholder="i.e. 50000 Rs."
         keyboardType='numeric'
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>No. of Bedrooms</Text>
       <TextInput
         style={styles.input}
         onChangeText={setBedRoom}
         value={bedRoom}
-        placeholder="No. of Bedrooms"
+        placeholder="i.e. 5"
         keyboardType='numeric'
+        placeholderTextColor='gray'
       />
+      <Text style={styles.text}>No. of Bathrooms</Text>
       <TextInput
         style={styles.input}
         onChangeText={setBathRoom}
         value={bathRoom}
-        placeholder="No. of Bathrooms"
+        placeholder="i.e. 4"
         keyboardType='numeric'
+        placeholderTextColor='gray'
       />
       <Button onPress={() => addProperty()} textColor='black' style={styles.button}>Add Property</Button>
-    </View>
+      </View>
+    </ScrollView>
   )
 }
 
@@ -107,24 +197,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: '5%',
+  },
+  text: {
+    fontSize: 18,
+    marginTop: 20,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    width: '100%',
+    color: 'black',
   },
   input: {
-    fontSize: 20,
-    marginTop: 20,
+    fontSize: 18,
     borderColor: 'gray',
     borderWidth: 1,
-    width: '90%',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    width: '100%',
+    color: 'black',
   },
   button: {
     marginTop: 20,
+    marginBottom: 30,
     alignItems: "center",
     backgroundColor: "#DDDDDD",
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
   buttonText: {
-    fontSize: 16
+    fontSize: 18,
+    color: 'black',
   },
 })
